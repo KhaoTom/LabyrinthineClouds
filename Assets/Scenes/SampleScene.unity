@@ -423,8 +423,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 86258632f1f79f647a5d5dbd8478f2ef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveDuration: 0.2
-  inputQueueWindow: 0.15
+  moveDuration: 0.05
   isMoving: 0
   isTurning: 0
   timeElapsed: 0

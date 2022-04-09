@@ -6,8 +6,7 @@ public class PlayerController : MonoBehaviour
 {
     public enum Movement { None = -1, Forward, Backward, TurnLeft, TurnRight };
 
-    public float moveDuration = 0.2f;
-    public float inputQueueWindow = 0.15f;
+    public float moveDuration = 0.1f;
 
     public bool isMoving = false;
     public bool isTurning = false;
