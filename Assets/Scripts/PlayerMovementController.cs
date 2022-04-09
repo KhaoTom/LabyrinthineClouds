@@ -17,6 +17,11 @@ public class PlayerMovementController : MonoBehaviour
     public KeyCode[] TurnLeftKeys = { KeyCode.LeftArrow, KeyCode.A };
     public KeyCode[] TurnRightKeys = { KeyCode.RightArrow, KeyCode.D };
 
+    public bool canMoveForward = true;
+    public bool canMoveBackward = true;
+    public bool canTurnLeft = true;
+    public bool canTurnRight = true;
+
     public bool isMoving = false;
     public bool isTurning = false;
 
@@ -48,6 +53,43 @@ public class PlayerMovementController : MonoBehaviour
         queuedMovement = Movement.Backward;
         movementIsSelected = true;
     }
+    public void ClearMovementSelection()
+    {
+        queuedMovement = Movement.None;
+        movementIsSelected = false;
+    }
+
+    public bool InputIsTurnRight()
+    {
+        return InputInKeys(TurnRightKeys);
+    }
+
+    public bool InputIsTurnLeft()
+    {
+        return InputInKeys(TurnLeftKeys);
+    }
+
+    public bool InputIsMoveForward()
+    {
+        return InputInKeys(MoveForwardKeys);
+    }
+
+    public bool InputIsMoveBackward()
+    {
+        return InputInKeys(MoveBackwardKeys);
+    }
+
+    public bool InputInKeys(KeyCode[] keys)
+    {
+        foreach (var key in keys)
+        {
+            if (Input.GetKeyDown(key))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
 
     private void Update()
     {
@@ -59,6 +101,7 @@ public class PlayerMovementController : MonoBehaviour
         {
             QueueMovement();
             HandleMovement();
+            ClearMovementSelection();
         }
     }
 
@@ -85,46 +128,13 @@ public class PlayerMovementController : MonoBehaviour
         }
     }
 
-    private bool InputIsTurnRight()
-    {
-        return InputInKeys(TurnRightKeys);
-       
-    }
-
-    private bool InputIsTurnLeft()
-    {
-        return InputInKeys(TurnLeftKeys);
-    }
-
-    private bool InputIsMoveForward()
-    {
-        return InputInKeys(MoveForwardKeys);
-    }
-
-    private bool InputIsMoveBackward()
-    {
-        return InputInKeys(MoveBackwardKeys);
-    }
-
-    private bool InputInKeys(KeyCode[] keys)
-    {
-        foreach (var key in keys)
-        {
-            if (Input.GetKeyDown(key))
-            {
-                return true;
-            }
-        }
-        return false;
-    }
-
     private void HandleMovement()
     {
         string did_move = "";
         string did_turn = "";
         if (queuedMovement == Movement.Forward)
         {
-            if (CanMoveForward())
+            if (canMoveForward)
             {
                 StartCoroutine(LerpPosition(transform.position, transform.position + transform.forward * 2));
                 did_move = "forward";
@@ -133,7 +143,7 @@ public class PlayerMovementController : MonoBehaviour
         }
         else if (queuedMovement == Movement.Backward)
         {
-            if (CanMoveBackward())
+            if (canMoveBackward)
             {
                 StartCoroutine(LerpPosition(transform.position, transform.position - transform.forward * 2));
                 did_move = "backward";
@@ -141,7 +151,7 @@ public class PlayerMovementController : MonoBehaviour
         }
         else if (queuedMovement == Movement.TurnRight)
         {
-            if (CanTurnRight())
+            if (canTurnRight)
             {
                 StartCoroutine(LerpLookAt(transform.position + transform.forward, transform.position + transform.right));
                 did_turn = "right";
@@ -149,7 +159,7 @@ public class PlayerMovementController : MonoBehaviour
         }
         else if (queuedMovement == Movement.TurnLeft)
         {
-            if (CanTurnLeft())
+            if (canTurnLeft)
             { 
                 StartCoroutine(LerpLookAt(transform.position + transform.forward, transform.position - transform.right));
                 did_turn = "left";
@@ -159,44 +169,12 @@ public class PlayerMovementController : MonoBehaviour
         if (did_move != "")
         {
             OnMoveFinished.Invoke(did_move);
-            ClearMovement();
         }
 
         if (did_turn != "")
         {
             OnTurnFinished.Invoke(did_turn);
-            ClearMovement();
         }
-    }
-
-    private bool CanTurnLeft()
-    {
-        Debug.LogWarning("CanTurnLeft Not Implemented!", this);
-        return true;
-    }
-
-    private bool CanTurnRight()
-    {
-        Debug.LogWarning("CanTurnRight Not Implemented!", this);
-        return true;
-    }
-
-    private bool CanMoveBackward()
-    {
-        Debug.LogWarning("CanMoveBackward Not Implemented!", this);
-        return true;
-    }
-
-    private bool CanMoveForward()
-    {
-        Debug.LogWarning("CanMoveForward Not Implemented!", this);
-        return true;
-    }
-
-    private void ClearMovement()
-    {
-        queuedMovement = Movement.None;
-        movementIsSelected = false;
     }
 
     private IEnumerator LerpLookAt(Vector3 from, Vector3 to)
