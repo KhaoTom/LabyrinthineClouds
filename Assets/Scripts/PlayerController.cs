@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using UnityEngine;
 
@@ -19,7 +18,7 @@ public class PlayerController : MonoBehaviour
     public bool movementIsSelected = false;
 
     public KeyCode[] MoveForwardKeys = { KeyCode.UpArrow, KeyCode.W };
-    public KeyCode[] MoveBackwardKeys = { KeyCode.DownArrow, KeyCode.W };
+    public KeyCode[] MoveBackwardKeys = { KeyCode.DownArrow, KeyCode.S };
     public KeyCode[] TurnLeftKeys = { KeyCode.LeftArrow, KeyCode.A };
     public KeyCode[] TurnRightKeys = { KeyCode.RightArrow, KeyCode.D };
 
@@ -49,8 +48,7 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
-        
-        if ((isMoving || isTurning) && WithinMoveQueueWindow())
+        if (isMoving || isTurning)
         {
             QueueMovement();
         }
@@ -70,43 +68,56 @@ public class PlayerController : MonoBehaviour
     {
         if (Input.anyKeyDown)
         {
-            if (InputMoveForward())
+            if (InputIsMoveForward())
             {
                 SelectMoveForward();
             }
-            else if (InputMoveBackward())
+            else if (InputIsMoveBackward())
             {
                 SelectMoveBackward();
             }
-            else if (InputTurnLeft())
+            else if (InputIsTurnLeft())
             {
                 SelectTurnLeft();
             }
-            else if (InputTurnRight())
+            else if (InputIsTurnRight())
             {
                 SelectTurnRight();
             }
         }
     }
 
-    private bool InputTurnRight()
+    private bool InputIsTurnRight()
     {
-        return Input.GetKeyDown(KeyCode.RightArrow) || Input.GetKeyDown(KeyCode.D);
+        return InputInKeys(TurnRightKeys);
+       
     }
 
-    private bool InputTurnLeft()
+    private bool InputIsTurnLeft()
     {
-        return Input.GetKeyDown(KeyCode.LeftArrow) || Input.GetKeyDown(KeyCode.A);
+        return InputInKeys(TurnLeftKeys);
     }
 
-    private bool InputMoveForward()
+    private bool InputIsMoveForward()
     {
-        return Input.GetKeyDown(KeyCode.UpArrow) || Input.GetKeyDown(KeyCode.W);
+        return InputInKeys(MoveForwardKeys);
     }
 
-    private bool InputMoveBackward()
+    private bool InputIsMoveBackward()
     {
-        return Input.GetKeyDown(KeyCode.UpArrow) || Input.GetKeyDown(KeyCode.S);
+        return InputInKeys(MoveBackwardKeys);
+    }
+
+    private bool InputInKeys(KeyCode[] keys)
+    {
+        foreach (var key in keys)
+        {
+            if (Input.GetKeyDown(key))
+            {
+                return true;
+            }
+        }
+        return false;
     }
 
     private void HandleMovement()
@@ -162,25 +173,25 @@ public class PlayerController : MonoBehaviour
 
     private bool CanTurnLeft()
     {
-        Debug.LogWarning("Not Implemented!", this);
+        Debug.LogWarning("CanTurnLeft Not Implemented!", this);
         return true;
     }
 
     private bool CanTurnRight()
     {
-        Debug.LogWarning("Not Implemented!", this);
+        Debug.LogWarning("CanTurnRight Not Implemented!", this);
         return true;
     }
 
     private bool CanMoveBackward()
     {
-        Debug.LogWarning("Not Implemented!", this);
+        Debug.LogWarning("CanMoveBackward Not Implemented!", this);
         return true;
     }
 
     private bool CanMoveForward()
     {
-        Debug.LogWarning("Not Implemented!", this);
+        Debug.LogWarning("CanMoveForward Not Implemented!", this);
         return true;
     }
 
