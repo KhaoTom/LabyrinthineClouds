@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.Events;
 
 
 public class PlayerController : MonoBehaviour
@@ -8,6 +9,14 @@ public class PlayerController : MonoBehaviour
 
     public float moveDuration = 0.1f;
 
+    public UnityEvent<string> OnMoveFinished;
+    public UnityEvent<string> OnTurnFinished;
+
+    public KeyCode[] MoveForwardKeys = { KeyCode.UpArrow, KeyCode.W };
+    public KeyCode[] MoveBackwardKeys = { KeyCode.DownArrow, KeyCode.S };
+    public KeyCode[] TurnLeftKeys = { KeyCode.LeftArrow, KeyCode.A };
+    public KeyCode[] TurnRightKeys = { KeyCode.RightArrow, KeyCode.D };
+
     public bool isMoving = false;
     public bool isTurning = false;
 
@@ -15,11 +24,6 @@ public class PlayerController : MonoBehaviour
 
     public Movement queuedMovement = Movement.None;
     public bool movementIsSelected = false;
-
-    public KeyCode[] MoveForwardKeys = { KeyCode.UpArrow, KeyCode.W };
-    public KeyCode[] MoveBackwardKeys = { KeyCode.DownArrow, KeyCode.S };
-    public KeyCode[] TurnLeftKeys = { KeyCode.LeftArrow, KeyCode.A };
-    public KeyCode[] TurnRightKeys = { KeyCode.RightArrow, KeyCode.D };
 
     public void SelectTurnRight()
     {
@@ -116,14 +120,14 @@ public class PlayerController : MonoBehaviour
 
     private void HandleMovement()
     {
-        bool did_move = false;
-        bool did_turn = false;
+        string did_move = "";
+        string did_turn = "";
         if (queuedMovement == Movement.Forward)
         {
             if (CanMoveForward())
             {
                 StartCoroutine(LerpPosition(transform.position, transform.position + transform.forward * 2));
-                did_move = true;
+                did_move = "forward";
             }
 
         }
@@ -132,7 +136,7 @@ public class PlayerController : MonoBehaviour
             if (CanMoveBackward())
             {
                 StartCoroutine(LerpPosition(transform.position, transform.position - transform.forward * 2));
-                did_move = true;
+                did_move = "backward";
             }
         }
         else if (queuedMovement == Movement.TurnRight)
@@ -140,7 +144,7 @@ public class PlayerController : MonoBehaviour
             if (CanTurnRight())
             {
                 StartCoroutine(LerpLookAt(transform.position + transform.forward, transform.position + transform.right));
-                did_move = true;
+                did_turn = "right";
             }
         }
         else if (queuedMovement == Movement.TurnLeft)
@@ -148,19 +152,19 @@ public class PlayerController : MonoBehaviour
             if (CanTurnLeft())
             { 
                 StartCoroutine(LerpLookAt(transform.position + transform.forward, transform.position - transform.right));
-                did_move = true;
+                did_turn = "left";
             }
         }
 
-        if (did_move)
+        if (did_move != "")
         {
-            // TODO: invoke step event
+            OnMoveFinished.Invoke(did_move);
             ClearMovement();
         }
 
-        if (did_turn)
+        if (did_turn != "")
         {
-            // TODO: invoke turn event
+            OnTurnFinished.Invoke(did_turn);
             ClearMovement();
         }
     }
