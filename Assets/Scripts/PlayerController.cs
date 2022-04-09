@@ -59,11 +59,6 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    private bool WithinMoveQueueWindow()
-    {
-        return moveDuration - timeElapsed < inputQueueWindow;
-    }
-
     private void QueueMovement()
     {
         if (Input.anyKeyDown)
