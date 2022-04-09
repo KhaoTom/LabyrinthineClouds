@@ -3,11 +3,11 @@ using UnityEngine;
 using UnityEngine.Events;
 
 
-public class PlayerController : MonoBehaviour
+public class PlayerMovementController : MonoBehaviour
 {
     public enum Movement { None = -1, Forward, Backward, TurnLeft, TurnRight };
 
-    public float moveDuration = 0.1f;
+    public float moveDuration = 0.05f;
 
     public UnityEvent<string> OnMoveFinished;
     public UnityEvent<string> OnTurnFinished;
