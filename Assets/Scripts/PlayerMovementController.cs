@@ -17,11 +17,6 @@ public class PlayerMovementController : MonoBehaviour
     public KeyCode[] TurnLeftKeys = { KeyCode.LeftArrow, KeyCode.A };
     public KeyCode[] TurnRightKeys = { KeyCode.RightArrow, KeyCode.D };
 
-    public bool canMoveForward = true;
-    public bool canMoveBackward = true;
-    public bool canTurnLeft = true;
-    public bool canTurnRight = true;
-
     public bool isMoving = false;
     public bool isTurning = false;
 
@@ -29,6 +24,18 @@ public class PlayerMovementController : MonoBehaviour
 
     public Movement queuedMovement = Movement.None;
     public bool movementIsSelected = false;
+
+    [field: SerializeField]
+    public bool CanMoveForward { get; set; } = true;
+
+    [field: SerializeField]
+    public bool CanMoveBackward { get; set; } = true;
+
+    [field: SerializeField]
+    public bool CanTurnLeft { get; set; } = true;
+
+    [field: SerializeField]
+    public bool CanTurnRight { get; set; } = true;
 
     public void SelectTurnRight()
     {
@@ -134,7 +141,7 @@ public class PlayerMovementController : MonoBehaviour
         string did_turn = "";
         if (queuedMovement == Movement.Forward)
         {
-            if (canMoveForward)
+            if (CanMoveForward)
             {
                 StartCoroutine(LerpPosition(transform.position, transform.position + transform.forward * 2));
                 did_move = "forward";
@@ -143,7 +150,7 @@ public class PlayerMovementController : MonoBehaviour
         }
         else if (queuedMovement == Movement.Backward)
         {
-            if (canMoveBackward)
+            if (CanMoveBackward)
             {
                 StartCoroutine(LerpPosition(transform.position, transform.position - transform.forward * 2));
                 did_move = "backward";
@@ -151,7 +158,7 @@ public class PlayerMovementController : MonoBehaviour
         }
         else if (queuedMovement == Movement.TurnRight)
         {
-            if (canTurnRight)
+            if (CanTurnRight)
             {
                 StartCoroutine(LerpLookAt(transform.position + transform.forward, transform.position + transform.right));
                 did_turn = "right";
@@ -159,7 +166,7 @@ public class PlayerMovementController : MonoBehaviour
         }
         else if (queuedMovement == Movement.TurnLeft)
         {
-            if (canTurnLeft)
+            if (CanTurnLeft)
             { 
                 StartCoroutine(LerpLookAt(transform.position + transform.forward, transform.position - transform.right));
                 did_turn = "left";
